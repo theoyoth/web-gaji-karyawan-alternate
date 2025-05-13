@@ -10,13 +10,13 @@
                 </div>
                 <div class="w-full m-auto">
                     <div class="flex gap-4">
-                        <a href="{{ route('awak12.index',['page' => 1]) }}" class="my-4 w-[200px] h-[100px] flex flex-col items-center justify-center bg-gray-700 text-white text-center rounded-md hover:bg-gray-800">
+                        <a href="{{ route('users.index',['kantor' => 'all','page' => 1]) }}" class="my-4 w-[200px] h-[100px] flex flex-col items-center justify-center bg-gray-700 text-white text-center rounded-md hover:bg-gray-800">
                             <div class="text-blue-500 text-4xl mb-2">
                                 <i class="fas fa-users"></i>
                             </div>
-                            <div class="text-center font-semibold text-white">AWAK 1 & AWAK 2</div>
+                            <div class="text-center font-semibold text-white">DAFTAR KARYAWAN</div>
                         </a>
-                        <a href="{{ route('kantor1.index',['page' => 1]) }}" class="my-4 w-[200px] h-[100px] flex items-center justify-center bg-gray-700 text-white text-center rounded-md hover:bg-gray-800">
+                        {{-- <a href="{{ route('kantor1.index',['page' => 1]) }}" class="my-4 w-[200px] h-[100px] flex items-center justify-center bg-gray-700 text-white text-center rounded-md hover:bg-gray-800">
                             <div class="text-green-500 text-4xl mb-2">
                                 <i class="fas fa-building"></i>
                             </div>
@@ -27,7 +27,7 @@
                                 <i class="fas fa-building"></i>
                             </div>
                             <div class="text-center font-semibold text-white ml-2">KANTOR 2</div>
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
             </div>

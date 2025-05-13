@@ -2,9 +2,9 @@
 	<nav class="flex justify-center items-center gap-1 mt-6">
 		{{-- Previous --}}
 		@if ($paginator->onFirstPage())
-			<span class="px-3 py-1 text-gray-400">← Prev</span>
+			<span class="px-3 py-1 text-gray-400">Prev</span>
 		@else
-			<a href="{{ $paginator->previousPageUrl() }}" class="px-3 py-1 text-white bg-gray-600 rounded hover:underline">← Prev</a>
+			<a href="{{ $paginator->previousPageUrl() }}" class="px-3 py-1 text-white bg-gray-800 rounded hover:underline flex items-center max-w-max"><i class="fas fa-chevron-left text-gray-100 text-sm mr-2"></i> Prev</a>
 		@endif
 
 		{{-- Page numbers --}}
@@ -26,9 +26,9 @@
 
 		{{-- Next --}}
 		@if ($paginator->hasMorePages())
-			<a href="{{ $paginator->nextPageUrl() }}" class="px-3 py-1 text-white bg-gray-600 rounded hover:underline">Next →</a>
+			<a href="{{ $paginator->nextPageUrl() }}" class="px-3 py-1 text-white bg-gray-800 rounded hover:underline flex items-center max-w-max">Next <i class="fas fa-chevron-right text-gray-100 text-sm ml-2"></i></a>
 		@else
-			<span class="px-3 py-1 text-gray-400">Next →</span>
+			<span class="px-3 py-1 text-gray-400">Next</span>
 		@endif
 	</nav>
 

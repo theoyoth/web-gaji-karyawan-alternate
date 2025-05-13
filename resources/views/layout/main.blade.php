@@ -9,7 +9,7 @@
         
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <title>Gaji pegawai</title>
+        <title>Gaji pegawai - alternate</title>
     </head>
     <body class="antialiased font-poppins bg-gray-300 relative">
         <div class="w-screen bg-zinc-100 py-4">

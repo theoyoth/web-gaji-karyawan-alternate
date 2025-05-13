@@ -348,5 +348,6 @@ class placeController extends Controller
           'totalUsersSalary' => $totalUsersSalary,
       ]);
     }
-
+  
+    
 }

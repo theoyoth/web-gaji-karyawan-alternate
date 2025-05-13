@@ -18,7 +18,9 @@ use App\Http\Controllers\UserController;
 */
 // home
 Route::get('/', [DaftarController::class, 'index'])->name('header.index');
-// users
+// USERS
+// get users
+Route::get('/users', [UserController::class, 'index'])->name('users.index');
 // create - form
 Route::get('/user/create/kantor', [UserController::class, 'create'])->name('user.createKantor');
 Route::get('/user/create/awak12', [UserController::class, 'createAwak12'])->name('user.createAwak12');
@@ -33,6 +35,8 @@ Route::put('/awak12/update/user/{userId}', [UserController::class, 'updateAwak12
 Route::put('/kantor/update/user/{userId}', [UserController::class, 'updateKantor'])->name('update.kantor');
 // delete
 Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+// filter
+Route::get('/users/filter', [UserController::class, 'filterUsers'])->name('users.filter');
 
 // places
 Route::get('/kantor-1', [placeController::class, 'kantor1'])->name('kantor1.index');
