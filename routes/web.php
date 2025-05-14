@@ -38,14 +38,16 @@ Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.dest
 // filter
 Route::get('/users/filter', [UserController::class, 'filterUsers'])->name('users.filter');
 
+Route::get('/form', [UserController::class, 'formUser'])->name('user.form');
+
 // places
-Route::get('/kantor-1', [placeController::class, 'kantor1'])->name('kantor1.index');
-Route::get('/kantor-2', [placeController::class, 'kantor2'])->name('kantor2.index');
-Route::get('/awak-1-2', [placeController::class, 'awak12'])->name('awak12.index');
+// Route::get('/kantor-1', [placeController::class, 'kantor1'])->name('kantor1.index');
+// Route::get('/kantor-2', [placeController::class, 'kantor2'])->name('kantor2.index');
+// Route::get('/awak-1-2', [placeController::class, 'awak12'])->name('awak12.index');
 // filter
-Route::get('/kantor-1/filter', [placeController::class, 'filterKantor1'])->name('filter.kantor1');
-Route::get('/kantor-2/filter', [placeController::class, 'filterKantor2'])->name('filter.kantor2');
-Route::get('/awak-1-2/filter', [placeController::class, 'filterAwak12'])->name('filter.awak12');
+// Route::get('/kantor-1/filter', [placeController::class, 'filterKantor1'])->name('filter.kantor1');
+// Route::get('/kantor-2/filter', [placeController::class, 'filterKantor2'])->name('filter.kantor2');
+// Route::get('/awak-1-2/filter', [placeController::class, 'filterAwak12'])->name('filter.awak12');
 // print
 Route::get('/print/awak-1-2', [PrintController::class, 'awak12'])->name('print.awak12');
 Route::get('/print/kantor-1', [PrintController::class, 'kantor1'])->name('print.kantor1');
@@ -55,6 +57,7 @@ Route::get('/print/awak-1-2/filter', [PrintController::class, 'filterAwak12'])->
 Route::get('/print/kantor-1/filter', [PrintController::class, 'filterKantor1'])->name('print.kantor1.filtered');
 Route::get('/print/kantor-2/filter', [PrintController::class, 'filterKantor2'])->name('print.kantor2.filtered');
 // search
-Route::get('/search/awak-1-2', [UserController::class, 'searchUserAwak12'])->name('search.awak12');
-Route::get('/search/kantor', [UserController::class, 'searchUserKantor'])->name('search.kantor');
-// Route::get('/search/kantor-2', [UserController::class, 'filterKantor2'])->name('print.kantor2.filtered');
+// Route::get('/search/awak-1-2', [UserController::class, 'searchUserAwak12'])->name('search.awak12');
+// Route::get('/search/kantor', [UserController::class, 'searchUserKantor'])->name('search.kantor');
+
+Route::get('/search', [UserController::class, 'searchUser'])->name('user.search');

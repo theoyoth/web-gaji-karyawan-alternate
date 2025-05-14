@@ -83,6 +83,10 @@ class UserController extends Controller
     ]);
   }
   
+	public function formUser(){
+		return view('user.form');
+	}
+  
 	public function create(){
 		return view('user.create-kantor');
 	}
@@ -489,11 +493,11 @@ class UserController extends Controller
     }, ['totalJumlahGaji' => 0, 'totalJumlahRetase' => 0, 'totalTunjanganMakan' => 0, 'totalPotonganBpjs' => 0, 'totalPotonganHariTua' => 0, 'totalPotonganKreditKasbon' => 0, 'totalGeneral' => 0]);
 
     // Return view with the necessary data
-    return view('place.awak12', [
-      'users' => $usersPaginate,
-      'pageTotals' => $pageTotals,
-      'totalUsersSalary' => $totalUsersSalary,
-    ]);
+    // return view('place.awak12', [
+    //   'users' => $usersPaginate,
+    //   'pageTotals' => $pageTotals,
+    //   'totalUsersSalary' => $totalUsersSalary,
+    // ]);
   }
 
   public function searchUserKantor(Request $request){
@@ -650,6 +654,67 @@ class UserController extends Controller
         'year' => $year,
         'pageTotals' => $pageTotals,
         'totalUsersSalary' => $totalUsersSalary,
+    ]);
+  }
+
+   public function searchUser(Request $request){
+    $search = $request->input('q'); // Get search term from the request
+    $kantor = $request->input('kantor');
+
+    if($kantor === 'all'){
+      $users = User::when($search, function ($query, $search) {
+                      // If there's a search term, filter by the user's name
+                      return $query->where('nama', 'like', '%' . $search . '%');
+                    })->with('salary');
+    }
+    else{
+      $users = User::where('kantor', $kantor) // Filter by kantor (if needed)
+                    ->when($search, function ($query, $search) {
+                      // If there's a search term, filter by the user's name
+                      return $query->where('nama', 'like', '%' . $search . '%');
+                    })->with('salary');
+    }
+
+    // Clone for total calculation (all data)
+    $allUsers = (clone $users)->get();
+
+    // Paginate data
+    $usersPaginate = $users->paginate(15)->appends($request->only(['search']));  // Include search in pagination links
+
+    // Calculate totals
+    $totalUsersSalary = $allUsers->reduce(function ($totalValue, $user) {
+      $salary = $user->salary;
+
+      return [
+        'totalJumlahGaji' => $totalValue['totalJumlahGaji'] + ($salary->jumlah_gaji ?? 0),
+        'totalJumlahRetase' => $totalValue['totalJumlahRetase'] + ($salary->deliveries->sum(fn($d) => $d->jumlah_retase * $d->tarif_retase) ?? 0),
+        'totalTunjanganMakan' => $totalValue['totalTunjanganMakan'] + ($salary->tunjangan_makan ?? 0),
+        'totalPotonganBpjs' => $totalValue['totalPotonganBpjs'] + ($salary->potongan_bpjs ?? 0),
+        'totalPotonganHariTua' => $totalValue['totalPotonganHariTua'] + ($salary->potongan_hari_tua ?? 0),
+        'totalPotonganKreditKasbon' => $totalValue['totalPotonganKreditKasbon'] + ($salary->potongan_kredit_kasbon ?? 0),
+        'totalGeneral' => $totalValue['totalGeneral'] + ($salary->jumlah_gaji - ($salary->potongan_bpjs + $salary->potongan_hari_tua + $salary->potongan_kredit_kasbon) ?? 0),
+      ];
+    }, ['totalJumlahGaji' => 0, 'totalJumlahRetase' => 0, 'totalTunjanganMakan' => 0, 'totalPotonganBpjs' => 0, 'totalPotonganHariTua' => 0, 'totalPotonganKreditKasbon' => 0, 'totalGeneral' => 0]);
+    
+    // Calculate paginate users total
+    $pageTotals = $usersPaginate->reduce(function ($totalValue, $user) {
+      $salary = $user->salary;
+
+      return [
+        'totalJumlahGaji' => $totalValue['totalJumlahGaji'] + ($salary->jumlah_gaji ?? 0),
+        'totalJumlahRetase' => $totalValue['totalJumlahRetase'] + ($salary->deliveries->sum(fn($d) => $d->jumlah_retase * $d->tarif_retase) ?? 0),
+        'totalTunjanganMakan' => $totalValue['totalTunjanganMakan'] + ($salary->tunjangan_makan ?? 0),
+        'totalPotonganBpjs' => $totalValue['totalPotonganBpjs'] + ($salary->potongan_bpjs ?? 0),
+        'totalPotonganHariTua' => $totalValue['totalPotonganHariTua'] + ($salary->potongan_hari_tua ?? 0),
+        'totalPotonganKreditKasbon' => $totalValue['totalPotonganKreditKasbon'] + ($salary->potongan_kredit_kasbon ?? 0),
+        'totalGeneral' => $totalValue['totalGeneral'] + ($salary->jumlah_gaji - ($salary->potongan_bpjs + $salary->potongan_hari_tua + $salary->potongan_kredit_kasbon) ?? 0),
+      ];
+    }, ['totalJumlahGaji' => 0, 'totalJumlahRetase' => 0, 'totalTunjanganMakan' => 0, 'totalPotonganBpjs' => 0, 'totalPotonganHariTua' => 0, 'totalPotonganKreditKasbon' => 0, 'totalGeneral' => 0]);
+
+    return view('user.index', [
+      'users' => $usersPaginate,
+      'pageTotals' => $pageTotals,
+      'totalUsersSalary' => $totalUsersSalary,
     ]);
   }
 }

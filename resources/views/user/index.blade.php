@@ -8,7 +8,7 @@
 						<a href="{{ route('header.index') }}" class="max-w-max flex items-center px-4 py-1 bg-gray-700 text-gray-100 rounded-md hover:bg-gray-800"><i class="fas fa-arrow-left text-lg text-gray-100 mr-1"></i> kembali</a>
               <div>
 										{{-- <h1 class="text-4xl font-bold text-center">DAFTAR :  GAJI KARYAWAN TRANSPORTIR AWAK 1 DAN AWAK 2</h3> --}}
-										<h1 class="text-4xl font-bold text-center">DAFTAR :  GAJI TRANSPORTIR AWAK 1 & AWAK 2 PT. GUNUNG SELATAN</h3>
+										<h1 class="text-4xl font-bold text-center">DAFTAR :  GAJI KARYAWAN PT. GUNUNG SELATAN</h3>
 								</div>
 								<div>
 										<h1 class="text-2xl font-bold text-center">BULAN : {{ $month ?? '' }} {{ $year ?? '' }}</h3>
@@ -27,37 +27,38 @@
 								<div class="w-full flex justify-between items-center mt-8">
                   <div class="space-x-2">
                     <a href="{{ route('users.index', ['kantor' => 'all']) }}"
-                      class="px-4 py-1 text-gray-800 border rounded hover:shadow-md {{ request('kantor') == 'all' ? 'border-b-2 border-b-blue-600 text-blue-600' : '' }}">
+                      class="px-4 py-1 border rounded hover:shadow-md {{ request('kantor') == 'all' ? 'border-b-2 border-blue-600 text-blue-600 ' : 'text-gray-800' }}">
                       <i class="fas fa-bars text-lg mr-1"></i>
                       All
                     </a>
                     <a href="{{ route('users.index', ['kantor' => 'awak 1 dan awak 2']) }}"
-                      class="px-4 py-1 text-gray-800 rounded border hover:shadow-md {{ request('kantor') == 'awak 1 dan awak 2' ? 'border-b-2 border-b-blue-600 text-blue-600' : '' }}">
+                      class="px-4 py-1 rounded border hover:shadow-md {{ request('kantor') == 'awak 1 dan awak 2' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-800' }}">
                       <i class="fas fa-users text-lg mr-1"></i>
                       Awak 1 dan Awak 2
                     </a>
                     <a href="{{ route('users.index', ['kantor' => 'kantor 1']) }}"
-                      class="px-4 py-1 text-gray-800 rounded border hover:shadow-md {{ request('kantor') == 'kantor 1' ? 'border-b-2 border-b-blue-600 text-blue-600' : '' }}">
+                      class="px-4 py-1 rounded border hover:shadow-md {{ request('kantor') == 'kantor 1' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-800' }}">
                       <i class="fas fa-building text-lg mr-1"></i>
                       Kantor 1
                     </a>
                     <a href="{{ route('users.index', ['kantor' => 'kantor 2']) }}"
-                      class="px-4 py-1 text-gray-800 rounded border hover:shadow-md {{ request('kantor') == 'kantor 2' ? 'border-b-2 border-b-blue-600 text-blue-600' : '' }}">
+                      class="px-4 py-1 rounded border hover:shadow-md {{ request('kantor') == 'kantor 2' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-800' }}">
                       <i class="fas fa-building text-lg mr-1"></i>
                       Kantor 2
                     </a>
                   </div>
-                  <form method="GET" action="{{ route('search.awak12') }}" class="flex gap-2 relative">
+                  <form method="GET" action="{{ route('user.search') }}" class="flex gap-2 relative">
                     <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">
                       <i class="fas fa-search"></i>
                     </span>
                     <input 
                       type="text" 
-                      name="search" 
-                      value="{{ request('search') }}" 
+                      name="q" 
+                      value="{{ request('q') }}" 
                       class="w-full pl-8 pr-2 py-1 outline-none border  bg-gray-100 shadow-md rounded placeholder:text-gray-400" 
                       placeholder="e.g. Rudi"
                     />
+                    <input type="hidden" name="kantor" value="{{ request('kantor') }}">
                     <button type="submit" class="px-4 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded">
                       cari
                     </button>
@@ -83,13 +84,13 @@
                       <button type="submit" class="px-4 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded">Filter</button>
                       {{-- Reset Filter Button --}}
                       @if(request('bulan') || request('tahun'))
-                        <a href="{{ route('users.index') }}" class="bg-gray-800 text-white px-4 py-1 rounded">Reset</a>
+                        <a href="{{ route('users.index',['kantor' => 'all']) }}" class="bg-gray-800 text-white px-4 py-1 rounded">Reset</a>
                       @endif
                     </form>
                   </div>
                   <div class="flex gap-4">
-                      <a href="{{ route('user.createAwak12') }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-100 bg-gray-800 hover:bg-gray-700 shadow-md rounded"><i class="fas fa-plus text-gray-100 text-sm mr-1"></i> Baru</a>
-                      <a href="{{ route('print.awak12') }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-100 bg-gray-800 hover:bg-gray-700 shadow-md rounded"><i class="fas fa-print text-gray-100 text-sm mr-1"></i> Cetak</a>
+                      <a href="{{ route('user.form') }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-100 bg-gray-800 hover:bg-gray-700 shadow-md rounded"><i class="fas fa-plus text-gray-100 text-sm mr-1"></i> Baru</a>
+                      <a href="{{ route('print.awak12') }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-800 border-2 border-gray-800 bg-gray-100 hover:bg-gray-200 shadow-md rounded"><i class="fas fa-print text-gray-800 text-sm mr-1"></i> Cetak</a>
                   </div>
                 </section>
 
