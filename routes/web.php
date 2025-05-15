@@ -39,6 +39,9 @@ Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.dest
 Route::get('/users/filter', [UserController::class, 'filterUsers'])->name('users.filter');
 
 Route::get('/form', [UserController::class, 'formUser'])->name('user.form');
+// print
+Route::get('/print', [UserController::class, 'printData'])->name('users.print');
+Route::get('/print/filter', [UserController::class, 'filterUsersPrint'])->name('users.print.filter');
 
 // places
 // Route::get('/kantor-1', [placeController::class, 'kantor1'])->name('kantor1.index');

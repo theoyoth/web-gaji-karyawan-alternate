@@ -47,6 +47,7 @@
                       Kantor 2
                     </a>
                   </div>
+                  
                   <form method="GET" action="{{ route('user.search') }}" class="flex gap-2 relative">
                     <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">
                       <i class="fas fa-search"></i>
@@ -90,7 +91,7 @@
                   </div>
                   <div class="flex gap-4">
                       <a href="{{ route('user.form') }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-100 bg-gray-800 hover:bg-gray-700 shadow-md rounded"><i class="fas fa-plus text-gray-100 text-sm mr-1"></i> Baru</a>
-                      <a href="{{ route('print.awak12') }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-800 border-2 border-gray-800 bg-gray-100 hover:bg-gray-200 shadow-md rounded"><i class="fas fa-print text-gray-800 text-sm mr-1"></i> Cetak</a>
+                      <a href="{{ route('users.print',['kantor' => 'all']) }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-800 border-2 border-gray-800 bg-gray-100 hover:bg-gray-200 shadow-md rounded"><i class="fas fa-print text-gray-800 text-sm mr-1"></i> Cetak</a>
                   </div>
                 </section>
 
@@ -100,22 +101,29 @@
 											<p class="text-red-500 py-2 bg-gray-100 indent-2">Tidak ada data karyawan yang ditemukan.</p>
 										@endif
 										<table class="min-w-full table-auto border-collapse text-[0.8rem]">
+                      @php
+                        $hasAnyDelivery = $users->filter(fn($user) => $user->salary && $user->salary->deliveries->isNotEmpty())->isNotEmpty();
+                      @endphp
 												<thead>
 														<tr>
 																<th rowspan="2" class="py-2 w-5 border border-gray-400 bg-gray-300">No.</th>
 																<th rowspan="2" class="py-2 border border-gray-400 bg-gray-300 w-[120px]">Nama</th>
 																<!-- Gaji Pokok with 3 sub-columns -->
 																<th rowspan="2" class="py-2 border border-gray-400 bg-gray-300 text-center">Gaji Pokok</th>
-																<!-- hari kerja -->
-																<th rowspan="2" class="py-2 border border-gray-400 bg-gray-300 text-center">Hari Kerja</th>
-																<!-- jumlah retase -->
-																<th colspan="2" class="py-2 border border-gray-400 bg-gray-300 text-center">Jumlah Retase</th>
-																<!-- tarif retase -->
-																<th rowspan="2" class="py-2 border border-gray-400 bg-gray-300 text-center">Tarif Retase</th>
+
+                                @if($hasAnyDelivery)
+                                  <!-- hari kerja -->
+                                  <th rowspan="2" class="py-2 border border-gray-400 bg-gray-300 text-center">Hari Kerja</th>
+                                  <!-- jumlah retase -->
+                                  <th colspan="2" class="py-2 border border-gray-400 bg-gray-300 text-center">Jumlah Retase</th>
+                                  <!-- tarif retase -->
+                                  <th rowspan="2" class="py-2 border border-gray-400 bg-gray-300 text-center">Tarif Retase</th>
+                                  <!-- jumlah ur -->
+                                  <th rowspan="2" class="py-2 border border-gray-400 bg-gray-300">Jumlah UR</th>
+                                @endif
+                                
 																<!-- Tunjangan -->
 																<th class="py-2 border border-gray-400 bg-gray-300">Tunjangan</th>
-																<!-- jumlah ur -->
-																<th rowspan="2" class="py-2 border border-gray-400 bg-gray-300">Jumlah UR</th>
 																<!-- Jumlah Kotor -->
 																<th rowspan="2" class="py-2 border border-gray-400 bg-gray-300">Jumlah Gaji</th>
 																<!-- Potongan with 3 sub-columns -->
@@ -127,9 +135,11 @@
 																<th rowspan="2" class="py-2 border border-gray-400 bg-gray-300 w-[50px]"></th>
 														</tr>
 														<tr>
+                              @if($hasAnyDelivery)
 																<!-- Sub-columns jumlah retase -->
 																<th class="py-2 border border-gray-400 bg-gray-300 w-[120px]"></th>
 																<th class="py-2 border border-gray-400 bg-gray-300 w-[150px]"></th>
+                              @endif
 																<!-- Sub-columns for tunjangan -->
 																<th class="py-2 border border-gray-400 bg-gray-300 w-[120px]">Makan</th>
 																<!-- Sub-columns for Potongan -->
@@ -143,10 +153,11 @@
 														@foreach($users as $user)
 																@if($user->salary)
 																		@php
-																				$salary = $user->salary;
-																				$deliveryCount = $salary->deliveries->count();
+                                      $salary = $user->salary;
+                                      $hasDeliveries = $salary->deliveries && $salary->deliveries->count();
+                                      $deliveryCount = $hasDeliveries ? $salary->deliveries->count() : 1; // use 1 to show one row
 																		@endphp
-																		@foreach ($salary->deliveries as $index => $delivery)
+																		@foreach ($hasDeliveries ? $salary->deliveries : [] as $index => $delivery)
 																			<tr>
 																				@if($index === 0)
 																					<td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">{{ $no++ }}</td>
@@ -154,13 +165,16 @@
 																					<td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">Rp{{number_format($salary->gaji_pokok, 0, ',', '.')}}</td>
 																					<td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">{{$salary->hari_kerja}}</td>
 																				@endif
-																				<td class="text-center py-1 border border-gray-400">{{ $delivery->jumlah_retase }}</td>
-																				<td class="text-center py-1 border border-gray-400">{{ $delivery->kota }}</td>
-																				<td class="text-center py-1 border border-gray-400">Rp{{ number_format($delivery->tarif_retase, 0, ',', '.') }}</td>
-																				@if($index === 0)
-																					<td rowspan="{{ $deliveryCount }}" class="text-center py-1 border border-gray-400">Rp{{number_format($salary->tunjangan_makan, 0, ',', '.')}}</td>
-																				@endif
-																					<td class="text-center py-1 border border-gray-400">Rp{{number_format($delivery->jumlah_ur, 0, ',', '.')}}</td>
+                                        
+                                        <td class="text-center py-1 border border-gray-400">{{ $delivery ? $delivery->jumlah_retase : "-" }}</td>
+                                        <td class="text-center py-1 border border-gray-400">{{ $delivery ? $delivery->kota : "-" }}</td>
+                                        <td class="text-center py-1 border border-gray-400">Rp{{ $delivery ? number_format( $delivery->tarif_retase, 0, ',', '.') : "-" }}</td>
+                                        <td class="text-center py-1 border border-gray-400">Rp{{ $delivery ? number_format( $delivery->jumlah_ur, 0, ',', '.') : "-"}}</td>
+
+                                        @if($index === 0)
+                                          <td rowspan="{{ $deliveryCount }}" class="text-center py-1 border border-gray-400">Rp{{number_format($salary->tunjangan_makan, 0, ',', '.')}}</td>
+                                        @endif
+                                        
 																				@if($index === 0)
 																					<td rowspan="{{ $deliveryCount }}" class="text-center py-1 border border-gray-400">Rp{{number_format($salary->jumlah_gaji, 0, ',', '.')}}</td>
 																					<td rowspan="{{ $deliveryCount }}" class="text-center py-1 border border-gray-400">Rp{{number_format($salary->potongan_bpjs, 0, ',', '.')}}</td>
@@ -172,12 +186,12 @@
 																					</td>
 																					<td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">
 																						<div class="flex flex-col gap-1 items-center">
-																							<a href="{{ route('edit.awak12', ['user' => $user->id, 'page' => request()->get('page', 1)]) }}" class="bg-blue-500 rounded py-1 px-2"><i class="fa fa-edit text-white"></i></a>
+																							<a href="{{ route('edit.awak12', ['user' => $user->id, 'page' => request()->get('page', 1)]) }}" class="bg-blue-500 hover:bg-blue-600 rounded py-1 px-2"><i class="fa fa-edit text-white text-xs"></i></a>
 																							<form action="{{ route('user.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?');">
 																								@csrf
 																								@method('DELETE')
-																								<button type="submit" class="bg-red-500 py-1 px-2 rounded">
-																									<i class="fas fa-trash text-white"></i>
+																								<button type="submit" class="bg-red-500 hover:bg-red-600 py-1 px-2 rounded">
+																									<i class="fas fa-trash text-white text-xs"></i>
 																								</button>
 																							</form>
 																						</div>
@@ -188,7 +202,7 @@
 																@endif
 														@endforeach
                             {{-- total each page pagination --}}
-														<tr>
+														{{-- <tr>
 															<td class="text-center border border-gray-500"></td>
 															<td colspan="2" class="border-b border-gray-500"><strong>TOTAL PER HALAMAN</strong></td>
 															<td class="text-center border-b border-b-gray-500"></td>
@@ -204,10 +218,10 @@
 															<td class="text-center border border-gray-500"><strong>Rp{{ number_format($pageTotals['totalGeneral'], 0) }}</strong></td>
 															<td class="text-center border border-gray-500"></td>
 															<td class="text-center border border-gray-500"></td>
-														</tr>
+														</tr> --}}
                             @if ($totalUsersSalary)
                             {{-- total all users salary --}}
-														<tr class="text-lg bg-gray-300 text-gray-900 font-semibold">
+														{{-- <tr class="text-lg bg-gray-300 text-gray-900 font-semibold">
 															<td class="text-center border border-gray-500"></td>
 															<td colspan="2" class="border-b border-gray-500"><strong>TOTAL SEMUA</strong></td>
 															<td class="text-center border-b border-b-gray-500"></td>
@@ -223,8 +237,7 @@
 															<td class="text-center border border-gray-500"><strong>Rp{{ number_format($totalUsersSalary['totalGeneral'], 0) }}</strong></td>
 															<td class="text-center border border-gray-500"></td>
 															<td class="text-center border border-gray-500"></td>
-														</tr>
-                            <tr></tr>
+														</tr> --}}
                             @endif
 												</tbody>
 										</table>
