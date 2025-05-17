@@ -121,38 +121,40 @@
             @php $no = 1; @endphp
               @foreach($users as $user)
                 @if ($user->salary)
-                  @php $deliveryCount = $salary =
-                      $user->salary;
-                      $deliveryCount = $salary->deliveries->count();
+                  @php 
+                    $salary = $user->salary;
+                    $deliveries = $salary ? $salary->deliveries : collect(); // assign deliveries or empty []
+                    $deliveryCount = $deliveries->count() ?: 1; // length of deliveries in user's salary
                   @endphp
-                  @foreach ($salary->deliveries as $index => $delivery)
-                  <tr>
-                    @if($index === 0)
-                      <td rowspan="{{ $deliveryCount }}">{{ $no++ }}</td>
-                      <td rowspan="{{ $deliveryCount }}" class="user-name">{{$user->nama}}</td>
-                      <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->gaji_pokok, 0, ',', '.')}}</td>
-                      <td rowspan="{{ $deliveryCount }}">{{$salary->hari_kerja}}</td>
-                    @endif
-                    <td>{{ $delivery->jumlah_retase }}</td>
-                    <td>{{ $delivery->kota }}</td>
-                    <td>Rp{{ number_format($delivery->tarif_retase, 0, ',', '.') }}</td>
-                    @if($index === 0)
-                      <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->tunjangan_makan, 0, ',', '.')}}</td>
-                      {{-- <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->tunjangan_hari_tua, 0, ',', '.')}}</td> --}}
-                    @endif
-                      <td>Rp{{number_format($delivery->jumlah_ur, 0, ',', '.')}}</td>
-                    @if($index === 0)
-                      <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->jumlah_gaji, 0, ',', '.')}}</td>
-                      <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->potongan_bpjs, 0, ',', '.')}}</td>
-                      <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->potongan_tabungan_hari_tua, 0, ',', '.')}}</td>
-                      <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->potongan_kredit_kasbon, 0, ',', '.')}}</td>
-                      <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->jumlah_bersih, 0, ',', '.')}}</td>
-                      <td rowspan="{{ $deliveryCount }}">
+                  @for($i = 0; $i < $deliveryCount; $i++)
+                    @php $delivery = $deliveries[$i] ?? null; @endphp
+                    <tr>
+                      @if($i === 0)
+                        <td rowspan="{{ $deliveryCount }}">{{ $no++ }}</td>
+                        <td rowspan="{{ $deliveryCount }}" class="user-name">{{$user->nama}}</td>
+                        <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->gaji_pokok, 0, ',', '.')}}</td>
+                        <td rowspan="{{ $deliveryCount }}">{{$salary->hari_kerja}}</td>
+                      @endif
+
+                      <td>{{ $delivery ? $delivery->jumlah_retase : "-" }}</td>
+                      <td>{{ $delivery ? $delivery->kota : "-" }}</td>
+                      <td>Rp{{ $delivery ? number_format($delivery->tarif_retase, 0, ',', '.') : "-" }}</td>
+                      <td>Rp{{ $delivery ? number_format($delivery->jumlah_ur, 0, ',', '.') : "-"}}</td>
+                      
+                      @if($i === 0)
+                        <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->tunjangan_makan, 0, ',', '.')}}</td>
+                        {{-- <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->tunjangan_hari_tua, 0, ',', '.')}}</td> --}}
+                        <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->jumlah_gaji, 0, ',', '.')}}</td>
+                        <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->potongan_bpjs, 0, ',', '.')}}</td>
+                        <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->potongan_tabungan_hari_tua, 0, ',', '.')}}</td>
+                        <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->potongan_kredit_kasbon, 0, ',', '.')}}</td>
+                        <td rowspan="{{ $deliveryCount }}">Rp{{number_format($salary->jumlah_bersih, 0, ',', '.')}}</td>
+                        <td rowspan="{{ $deliveryCount }}">
                           <img src="{{ file_exists(public_path('storage/ttd/' . $user->nama . '.png')) ? asset('storage/ttd/' . $user->nama . '.png') : '' }}" alt="ttd">
-                      </td>
-                    @endif
-                  </tr>
-                  @endforeach
+                        </td>
+                      @endif
+                    </tr>
+                  @endfor
                 @endif
               @endforeach
               <tr class="row-total">

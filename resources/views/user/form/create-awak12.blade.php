@@ -1,7 +1,7 @@
 <main>
   <h1 class="text-2xl font-bold text-center">FORMULIR INPUT TRANSPORTIR</h1>
   <h1 class="text-2xl font-bold text-center">AWAK 1 & AWAK 2</h1>
-  <div class="mt-8">
+  <div class="mt-4">
     <form action="{{ route('user.storeAwak12') }}" method="POST">
       @csrf
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

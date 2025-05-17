@@ -1,6 +1,6 @@
 <main>
   <h1 class="text-4xl font-bold text-center">FORMULIR INPUT KANTOR</h1>
-  <div class="mt-8">
+  <div class="mt-4">
       <form action="{{ route('user.store') }}" method="POST">
           @csrf
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

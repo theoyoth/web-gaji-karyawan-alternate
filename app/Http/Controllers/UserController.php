@@ -84,7 +84,7 @@ class UserController extends Controller
   }
   
 	public function formUser(){
-		return view('user.form');
+		return view('user.form.index');
 	}
   
 	public function create(){
@@ -168,7 +168,7 @@ class UserController extends Controller
 		$salary->save();
 		$salary->refresh();
 
-		$allUsersKantor = User::get()->count();
+		$allUsersKantor = User::where('kantor', $request->input('kantor'))->get()->count();
 		$lastPageKantor = ceil($allUsersKantor / 15);
 
     return redirect()->route('users.index',['kantor' => $request->input('kantor'), 'page'=>$lastPageKantor])->with('success', 'user saved successfully!');
@@ -773,7 +773,7 @@ class UserController extends Controller
     ]);
 
     return view('user.print', [
-        'users' => $usersPaginate,
+        'users' => $allUsers,
         'pageTotals' => $pageTotals,
         'totalUsersSalary' => $totalUsersSalary,
     ]);
