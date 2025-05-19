@@ -67,8 +67,11 @@
           </select>
           <button type="submit" class="select-input-filter">Filter</button>
           {{-- Reset Filter Button --}}
+          @php
+            $kan = request('kantor');
+          @endphp
           @if(request('bulan') || request('tahun'))
-            <a href="{{ route('users.print',['kantor' => 'all']) }}" class="select-input-filter btn-reset-filter">Reset</a>
+            <a href="{{ route('users.print',['kantor' => $kan]) }}" class="select-input-filter btn-reset-filter">Reset</a>
           @endif
         </form>
       </fieldset>

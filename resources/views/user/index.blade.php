@@ -84,8 +84,11 @@
                       </select>
                       <button type="submit" class="px-4 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded">Filter</button>
                       {{-- Reset Filter Button --}}
+                      @php
+                        $kan = request('kantor')
+                      @endphp
                       @if(request('bulan') || request('tahun'))
-                        <a href="{{ route('users.index',['kantor' => 'all']) }}" class="bg-gray-800 text-white px-4 py-1 rounded">Reset</a>
+                        <a href="{{ route('users.index',['kantor' => $kan]) }}" class="bg-gray-800 text-white px-4 py-1 rounded">Reset</a>
                       @endif
                     </form>
                   </div>
