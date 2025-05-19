@@ -49,6 +49,7 @@
                   </div>
                   
                   <form method="GET" action="{{ route('user.search') }}" class="flex gap-2 relative">
+                    <input type="hidden" name="kantor" value="{{ request('kantor') }}">
                     <span class="absolute left-2 top-1/2 -translate-y-1/2 text-gray-500">
                       <i class="fas fa-search"></i>
                     </span>
@@ -59,7 +60,6 @@
                       class="w-full pl-8 pr-2 py-1 outline-none border  bg-gray-100 shadow-md rounded placeholder:text-gray-400" 
                       placeholder="e.g. Rudi"
                     />
-                    <input type="hidden" name="kantor" value="{{ request('kantor') }}">
                     <button type="submit" class="px-4 py-1 text-white bg-blue-600 hover:bg-blue-700 rounded">
                       cari
                     </button>
@@ -184,7 +184,17 @@
                                   
                                   <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">
                                     <div class="flex flex-col gap-1 items-center">
-                                      <a href="{{ route('edit.awak12', ['user' => $user->id, 'page' => request()->get('page', 1)]) }}" class="bg-blue-500 hover:bg-blue-600 rounded py-1 px-2"><i class="fa fa-edit text-white text-xs"></i></a>
+                                      @php
+                                        $kan = $user->kantor;
+                                        $r;
+                                        if($kan === 'awak 1 dan awak 2'){
+                                          $r = 'edit.awak12';
+                                        }
+                                        else if($kan === 'kantor 1' || $kan === 'kantor 2'){
+                                          $r = 'edit.kantor';
+                                        }
+                                      @endphp
+                                      <a href="{{ route($r, ['user' => $user->id, 'page' => request()->get('page', 1)]) }}" class="bg-blue-500 hover:bg-blue-600 rounded py-1 px-2"><i class="fa fa-edit text-white text-xs"></i></a>
                                       <form action="{{ route('user.destroy', $user->id) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?');">
                                         @csrf
                                         @method('DELETE')

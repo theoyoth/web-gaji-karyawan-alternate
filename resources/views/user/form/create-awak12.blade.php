@@ -120,7 +120,7 @@
 
         <!-- Right Column -->
         <div class="space-y-2">
-          <div class="">
+          <div>
             <h2 class="text-lg font-bold mb-2">Input Retase</h2>
             <div id="delivery-wrapper">
               <div class="flex flex-col gap-1 pb-2 border-b-2 border-gray-300">

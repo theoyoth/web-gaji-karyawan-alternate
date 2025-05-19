@@ -87,13 +87,13 @@ class UserController extends Controller
 		return view('user.form.index');
 	}
   
-	public function create(){
-		return view('user.create-kantor');
-	}
+	// public function create(){
+	// 	return view('user.create-kantor');
+	// }
 
-	public function createAwak12(){
-		return view('user.create-awak12');
-	}
+	// public function createAwak12(){
+	// 	return view('user.create-awak12');
+	// }
 
 	public function store(Request $request){
 		$request->validate([
@@ -172,7 +172,7 @@ class UserController extends Controller
 		$lastPageKantor = ceil($allUsersKantor / 15);
 
     return redirect()->route('users.index',['kantor' => $request->input('kantor'), 'page'=>$lastPageKantor])->with('success', 'user saved successfully!');
-	}
+	}    
 
 	public function storeAwak12(Request $request){
 		$request->validate([
@@ -265,7 +265,7 @@ class UserController extends Controller
 		$allUsers = User::where('kantor', "awak 1 dan awak 2")->get()->count();
 		$lastPage = ceil($allUsers / 15);
 
-		return redirect()->route('awak12.index',['page' => $lastPage])->with('success', 'user saved successfully!');
+		return redirect()->route('users.index',['kantor' => 'awak 1 dan awak 2','page' => $lastPage])->with('success', 'user saved successfully!');
 	}
 
 	public function destroy($id){
@@ -293,11 +293,11 @@ class UserController extends Controller
 
 	public function editPageAwak12(User $user){
 		// dd($user->salaries);
-		return view('edit.awak12', compact('user'));
+		return view('user.edit.awak12', compact('user'));
 	}
 	public function editPageKantor(User $user){
 		// dd($user->salaries);
-		return view('edit.kantor', compact('user'));
+		return view('user.edit.kantor', compact('user'));
 	}
 
 	public function updateAwak12(Request $request, $userId){
@@ -370,9 +370,10 @@ class UserController extends Controller
 			}
 		}
 
-		$page = $request->input('page', 1);
+    $allUsers = User::where('kantor', "awak 1 dan awak 2")->get()->count();
+		$lastPage = ceil($allUsers / 15);
 
-		return redirect()->route('awak12.index',['page'=>$page])->with('success', 'User updated successfully!');
+		return redirect()->route('users.index',['kantor' => 'awak 1 dan awak 2','page'=>$lastPage])->with('success', 'User updated successfully!');
 	}
 
 	public function updateKantor(Request $request, $userId){
@@ -426,14 +427,10 @@ class UserController extends Controller
 
 	  $salary->save();
 
-	  $page = $request->input('page', 1);
+    $allUsersKantor = User::where('kantor', $request->input('kantor'))->get()->count();
+    $lastPageKantor = ceil($allUsersKantor / 15);
 
-	  if($request->input('kantor') === 'kantor 1'){
-		  return redirect()->route('kantor1.index',['page'=>$page])->with('success', 'user updated successfully!');
-	  }
-	  else if($request->input('kantor') === 'kantor 2'){
-		  return redirect()->route('kantor2.index',['page'=>$page])->with('success', 'user updated successfully!');
-	  }
+    return redirect()->route('users.index',['kantor' => $request->input('kantor'), 'page'=>$lastPageKantor])->with('success', 'user updated successfully!');
 	}
 
   public function searchUserAwak12(Request $request){
