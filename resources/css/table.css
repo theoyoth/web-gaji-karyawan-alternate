@@ -91,6 +91,7 @@ text-align: center;
 font-size: 1.5rem;
 text-align: center;
 line-height: 10px;
+text-transform: uppercase;
 }
 .kop-surat{
 border-bottom: 1px solid black;
@@ -232,6 +233,7 @@ border-bottom: 1px solid black;
     font-size: 1.2rem;
     text-align: center;
     line-height: 10px;
+    text-transform: uppercase;
   }
   .kop-surat{
     border-bottom: 1px solid black;
