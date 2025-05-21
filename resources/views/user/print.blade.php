@@ -17,7 +17,7 @@
       </div>
       <div>
         {{-- <h1 class="header-subtext">GAJI KARYAWAN TRANSPORTIR AWAK 1 DAN AWAK 2</h3> --}}
-        <h1 class="subtext">DAFTAR :  GAJI KARYAWAN & KARYAWATI {{request('kantor') === 'all' ? 'GUNUNG SELATAN' : request('kantor')}}</h1>
+        <h1 class="subtext">DAFTAR :  GAJI KARYAWAN & KARYAWATI {{request('kantor') === 'all' ? 'PT GUNUNG SELATAN' : request('kantor')}}</h1>
         <h1 class="subtext">BULAN : {{ $month ?? '' }} {{ $year ?? '' }}</h3>
       </div>
 
