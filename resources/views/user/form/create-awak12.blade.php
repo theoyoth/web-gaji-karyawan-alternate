@@ -8,19 +8,23 @@
         <!-- Left Column -->
         <div class="space-y-2">
           <div>
-            <label for="nama" class="mb-1 block text-xs font-bold text-gray-700">Nama</label>
-            <input type="text" id="nama" name="nama" value="{{ old('nama') }}" class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none focus:border-gray-600 shadow-sm">
+            <label for="user_id" class="mb-1 block text-xs font-bold text-gray-700">Nama</label>
+            <select name="user_id" id="user_id" required class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-300 shadow-sm">
+                @foreach ($users as $user)
+                  <option value="{{ $user->id }}">{{ $user->nama }}</option>
+                @endforeach
+            </select>
+            {{-- <input type="text" id="nama" name="nama" value="{{ old('nama') }}" class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none focus:border-gray-600 shadow-sm"> --}}
             @error('nama')
               <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
           </div>
           <div>
               <label for="kantor" class="mb-1 block text-xs font-bold text-gray-700">Kantor</label>
-              <select name="kantor" id="kantor" required class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none focus:border-gray-600 shadow-sm">
-                @foreach (['awak 1 dan awak 2'] as $kan)
-                  <option value="{{ $kan }}" {{ request('kan') ? 'selected' : '' }}>{{ $kan }}</option>
-                @endforeach
-              </select>
+              <input type="text" id="kantor" name="kantor" value="awak 1 dan awak 2" class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-300 shadow-sm" readonly>
+              @error('kantor')
+                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+              @enderror
               @error('kantor')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
               @enderror
@@ -42,18 +46,18 @@
           <div>
               <label for="bulan" class="mb-1 block text-xs font-bold text-gray-700">Bulan</label>
               <select name="bulan" value="{{ old('bulan') }}" class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none focus:border-gray-600 shadow-sm">
-                  <option value="Januari">Januari</option>
-                  <option value="Februari">Februari</option>
-                  <option value="Maret">Maret</option>
-                  <option value="April">April</option>
-                  <option value="Mei">Mei</option>
-                  <option value="Juni">Juni</option>
-                  <option value="Juli">Juli</option>
-                  <option value="Agustus">Agustus</option>
-                  <option value="September">September</option>
-                  <option value="Oktober">Oktober</option>
-                  <option value="November">November</option>
-                  <option value="Desember">Desember</option>
+                  <option value="Januari" {{ request('bulan') === 'Januari' ? 'selected' : '' }}>Januari</option>
+                  <option value="Februari" {{ request('bulan') === 'Februari' ? 'selected' : '' }}>Februari</option>
+                  <option value="Maret" {{ request('bulan') === 'Maret' ? 'selected' : '' }}>Maret</option>
+                  <option value="April" {{ request('bulan') === 'April' ? 'selected' : '' }}>April</option>
+                  <option value="Mei" {{ request('bulan') === 'Mei' ? 'selected' : '' }}>Mei</option>
+                  <option value="Juni" {{ request('bulan') === 'Juni' ? 'selected' : '' }}>Juni</option>
+                  <option value="Juli" {{ request('bulan') === 'Juli' ? 'selected' : '' }}>Juli</option>
+                  <option value="Agustus" {{ request('bulan') === 'Agustus' ? 'selected' : '' }}>Agustus</option>
+                  <option value="September" {{ request('bulan') === 'September' ? 'selected' : '' }}>September</option>
+                  <option value="Oktober" {{ request('bulan') === 'Oktober' ? 'selected' : '' }}>Oktober</option>
+                  <option value="November" {{ request('bulan') === 'November' ? 'selected' : '' }}>November</option>
+                  <option value="Desember" {{ request('bulan') === 'Desember' ? 'selected' : '' }}>Desember</option>
               </select>
               @error('bulan')
                   <p class="text-red-500 text-sm mt-1">{{ $message }}</p>

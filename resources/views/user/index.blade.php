@@ -93,8 +93,8 @@
                     </form>
                   </div>
                   <div class="flex gap-4">
-                      <a href="{{ route('user.form') }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-100 bg-gray-800 hover:bg-gray-700 shadow-md rounded"><i class="fas fa-plus text-gray-100 text-sm mr-1"></i> Baru</a>
-                      <a href="{{ route('users.print',['kantor' => 'all']) }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-800 border-2 border-gray-800 bg-gray-100 hover:bg-gray-200 shadow-md rounded"><i class="fas fa-print text-gray-800 text-sm mr-1"></i> Cetak</a>
+                      <a href="{{ route('user.form',['bulan' => now('Asia/Jayapura')->locale('id')->translatedFormat('F'), 'tahun' => now()->year]) }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-100 bg-gray-800 hover:bg-gray-700 shadow-md rounded"><i class="fas fa-plus text-gray-100 text-sm mr-1"></i> Baru</a>
+                      <a href="{{ route('users.print',['kantor' => 'awak 1 dan awak 2']) }}" class="max-w-max flex items-center my-4 px-6 py-1 text-gray-800 border-2 border-gray-800 bg-gray-100 hover:bg-gray-200 shadow-md rounded"><i class="fas fa-print text-gray-800 text-sm mr-1"></i> Cetak</a>
                   </div>
                 </section>
 
@@ -158,7 +158,7 @@
                               <tr>
                                 @if($i === 0)
                                   <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">{{ $no++ }}</td>
-                                  <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400 uppercase">{{$user->nama}}</td>
+                                  <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400 uppercase">{{$user->nama}}-{{$user->id}}</td>
                                   <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">Rp{{number_format($salary->gaji_pokok, 0, ',', '.')}}</td>
                                   <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">{{$salary->hari_kerja ?? '-'}}</td>
                                 @endif

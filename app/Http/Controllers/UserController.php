@@ -84,7 +84,12 @@ class UserController extends Controller
   }
   
 	public function formUser(){
-		return view('user.form.index');
+    $kantor = ["awak 1 dan awak 2"];
+    $users = User::whereIn('kantor', $kantor)
+             ->with('salary')
+             ->get();
+
+		return view('user.form.index', compact('users'));
 	}
   
 	// public function create(){
@@ -176,7 +181,8 @@ class UserController extends Controller
 
 	public function storeAwak12(Request $request){
 		$request->validate([
-			'nama' => 'required|max:255',
+      'user_id' => 'nullable|exists:users,id',
+			'nama' => 'max:255',
 			'kantor' => 'required|max:255',
 
 			'gaji_pokok' => 'required|numeric',
@@ -212,14 +218,18 @@ class UserController extends Controller
 		Storage::disk('public')->put('ttd/' . $fileName, base64_decode($image));
 
 		// create new instance for user,salary,delivery
-		$user = new User();
+    // get or create user
+    if ($request->filled('user_id')) {
+        $user = User::find($request->user_id);
+    } else {
+        $user = new User();
+        $user->nama = Str::title($request->input('nama'));
+        $user->kantor = $request->input('kantor');
+        $user->tanggal_diangkat = $request->input('tanggal_diangkat') ?: null;
+        $user->save();
+    }
+    
 		$salary = new Salary();
-
-		// input data
-		$user->nama = Str::title($request->input('nama'));
-		$user->kantor = $request->input('kantor');
-
-		$user->save();
 
 		$salary->user_id = $user->id;
 		$salary->gaji_pokok = $request->input('gaji_pokok');
