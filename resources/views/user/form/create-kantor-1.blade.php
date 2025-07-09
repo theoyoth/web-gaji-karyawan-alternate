@@ -150,7 +150,7 @@
                 {{-- TTD --}}
                 <div id="form-kantor">
                   <label for="signature" class="mb-1 block text-xs font-bold text-gray-800">Tanda tangan</label>
-                  <canvas id="signature-pad-kantor" width="200" height="100" class="bg-white border-2 shadow-sm border-gray-200 active:border-gray-600"></canvas>
+                  <canvas id="signature-pad-kantor-1" width="200" height="100" class="bg-white border-2 shadow-sm border-gray-200 active:border-gray-600"></canvas>
                   <input type="hidden" name="ttd" id="ttd">
                   <p class="text-gray-500 text-xs mt-1">Gambar tanda tangan di atas</p>
                   <div class="flex mt-2">

@@ -8,27 +8,13 @@
         </a>
         <fieldset class="space-x-2 border border-gray-300 rounded max-w-max p-2">
           <legend class="text-gray-400 mx-2 text-xs">tipe form</legend>
-          <button
-            onclick="showForm('kantor-1')"
-            id="btn-kantor-1"
-            class="px-4 py-1 border rounded hover:shadow-md">
-            <i class="fas fa-building text-lg mr-1"></i>
-            Kantor 1
-          </button>
-          <button
-            onclick="showForm('kantor-2')"
-            id="btn-kantor-2"
-            class="px-4 py-1 border rounded hover:shadow-md">
-            <i class="fas fa-building text-lg mr-1"></i>
-            Kantor 2
-          </button>
-          <button
-            onclick="showForm('awak')"
-            id="btn-awak"
-            class="px-4 py-1 rounded border hover:shadow-md">
-            <i class="fas fa-users text-lg mr-1"></i>
-            Awak 1 dan Awak 2
-          </button>
+          @php
+              $activeKantor = request('kantor');
+          @endphp
+
+          <a href="{{ route('user.form', ['kantor' => 'kantor 1']) }}" id="btn-kantor-1" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'kantor 1' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-building text-lg mr-1"></i> Kantor 1</a>
+          <a href="{{ route('user.form', ['kantor' => 'kantor 2']) }}" id="btn-kantor-2" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'kantor 2' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-building text-lg mr-1"></i> Kantor 2</a>
+          <a href="{{ route('user.form', ['kantor' => 'awak 1 dan awak 2']) }}" id="btn-awak" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'awak 1 dan awak 2' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-users text-lg mr-1"></i> Awak 1 dan 2</a>
         </fieldset>
         <hr class="my-4 border-[1px] border-gray-200" />
 
@@ -51,7 +37,6 @@
 
             <script>
               let signaturePad;
-              let currentForm;
 
               function initSignaturePad(formId) {
                 const canvas = document.getElementById(`signature-pad-${formId}`);
@@ -59,7 +44,6 @@
                 if (!canvas) return;
 
                 signaturePad = new SignaturePad(canvas);
-                currentForm = formId;
 
                 // Clear the signature pad
                 const clearBtn = document.getElementById(`clear-${formId}`);
@@ -78,55 +62,30 @@
                 const params = new URLSearchParams(window.location.search);
                 let kantorQuery = params.get('kantor');
                 
-                if (kantorQuery === 'awak 1 dan awak 2') {
-                  showForm('awak');
-                } 
-                else if (kantorQuery === 'kantor 1') {
-                  currentKantor = kantorQuery;
-                  showForm('kantor-1');
+                let formId;
+
+                if (kantorQuery === 'kantor 1') {
+                  formId = "kantor-1"
                 } 
                 else if(kantorQuery === 'kantor 2'){
-                  currentKantor = kantorQuery;
-                  showForm('kantor-2');
+                  formId = "kantor-2"
                 }
-                // Fallback
                 else {
-                  showForm('awak');
+                  formId = "awak"
                 }
-              });
 
-              function showForm(type){
+                // Show only the correct form
                 document.getElementById('form-kantor-1').classList.add('hidden');
                 document.getElementById('form-kantor-2').classList.add('hidden');
                 document.getElementById('form-awak').classList.add('hidden');
-                document.getElementById(`form-${type}`).classList.remove('hidden');
 
-                // Reset button styles
-                document.getElementById('btn-kantor-1').classList.remove('layout-btn-active');
-                document.getElementById('btn-kantor-2').classList.remove('layout-btn-active');
-                document.getElementById('btn-awak').classList.remove('layout-btn-active');
-
-                // Activate the correct button
-                document.getElementById(`btn-${type}`).classList.add('layout-btn-active');
-
-                // ✅ Update URL without reloading
-                const params = new URLSearchParams(window.location.search);
-
-                if (type === 'kantor-1') {
-                  params.set('kantor', 'kantor 1')
-                } else if(type === 'kantor-2'){
-                  params.set('kantor','kantor 2')
-                } else {
-                  params.set('kantor', 'awak 1 dan awak 2');
+                const activeForm = document.getElementById(`form-${formId}`);
+                if (activeForm) {
+                  activeForm.classList.remove('hidden');
+                  initSignaturePad(formId);
                 }
-
-                const newUrl = `${window.location.pathname}?${params.toString()}`;
-                window.history.pushState({}, '', newUrl);
-                initSignaturePad(type);
-              }
+              });
               
-              
-
               document.querySelectorAll('form').forEach(form => {
                 form.addEventListener('submit', function () {
                   const ttdInput = form.querySelector('input[name="ttd"]');
