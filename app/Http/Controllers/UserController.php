@@ -13,16 +13,19 @@ class UserController extends Controller
 {
   public function index(Request $request){
     $kantor = $request->input('kantor');
+    $bulan = $request->input('bulan');
+    $tahun = $request->input('tahun');
 
-    if($kantor === 'all'){
-      // query all users no matter where they are coming from
-      $query = User::with('salary.deliveries');
-    }
-    else{
-      // Build query (do NOT call get() here)
-      $query = User::where('kantor', $kantor)
-              ->with('salary.deliveries');
-    }
+    $query = User::where('kantor', $kantor)
+        ->whereHas('salary', function ($q) use ($bulan, $tahun) {
+            $q->where('bulan', $bulan)
+              ->where('tahun', $tahun);
+        })
+        ->with(['salary' => function ($q) use ($bulan, $tahun) {
+            $q->where('bulan', $bulan)
+              ->where('tahun', $tahun)
+              ->with('deliveries');
+        }]);
 
     // Clone for total calculation
     $allUsers = (clone $query)->get();
@@ -83,13 +86,13 @@ class UserController extends Controller
     ]);
   }
   
-	public function formUser(){
-    $kantor = ["awak 1 dan awak 2"];
-    $users = User::whereIn('kantor', $kantor)
+	public function formUser(Request $request){
+    $kantor = $request->input('kantor');
+    $users = User::whereIn('kantor', [$kantor])
              ->with('salary')
              ->get();
-
-		return view('user.form.index', compact('users'));
+		
+    return view('user.form.index', compact('users'));
 	}
   
 	// public function create(){
@@ -140,19 +143,18 @@ class UserController extends Controller
 		+ ($request->tunjangan_makan ?? 0)
 		+ ($request->tunjangan_hari_tua ?? 0);
 
+    if ($request->filled('user_id')) {
+        $user = User::find($request->user_id);
+    } else {
+        $user = new User();
+        $user->nama = Str::title($request->input('nama'));
+        $user->kantor = $request->input('kantor');
+        $user->tanggal_diangkat = $request->input('tanggal_diangkat') ?: null;
+        $user->save();
+    }
+
 		// create new instance for user,salary,delivery
-		$user = new User();
 		$salary = new Salary();
-
-
-		// input data
-		$user->nama = Str::title($request->input('nama'));
-		$user->kantor = $request->input('kantor');
-		$user->tempat_lahir = Str::title($request->input('tempat_lahir')) ?: null;
-		$user->tanggal_lahir = $request->input('tanggal_lahir') ?: null;
-		$user->tanggal_diangkat = $request->input('tanggal_diangkat') ?: null;
-
-		$user->save();
 
 		$salary->user_id = $user->id;
 		$salary->gaji_pokok = $request->input('gaji_pokok');
@@ -176,7 +178,7 @@ class UserController extends Controller
 		$allUsersKantor = User::where('kantor', $request->input('kantor'))->get()->count();
 		$lastPageKantor = ceil($allUsersKantor / 15);
 
-    return redirect()->route('users.index',['kantor' => $request->input('kantor'), 'page'=>$lastPageKantor])->with('success', 'user saved successfully!');
+    return redirect()->route('users.index',['kantor' => $request->input('kantor'),'bulan' => $request->input('bulan'),'tahun' => $request->input('tahun'), 'page'=>$lastPageKantor])->with('success', 'user saved successfully!');
 	}    
 
 	public function storeAwak12(Request $request){
@@ -275,7 +277,7 @@ class UserController extends Controller
 		$allUsers = User::where('kantor', "awak 1 dan awak 2")->get()->count();
 		$lastPage = ceil($allUsers / 15);
 
-		return redirect()->route('users.index',['kantor' => 'awak 1 dan awak 2','page' => $lastPage])->with('success', 'user saved successfully!');
+		return redirect()->route('users.index',['kantor' => 'awak 1 dan awak 2','bulan' => $request->input('bulan'),'tahun' => $request->input('tahun')])->with('success', 'user saved successfully!');
 	}
 
 	public function destroy($id){

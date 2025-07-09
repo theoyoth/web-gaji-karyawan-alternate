@@ -3,17 +3,24 @@
 @section('content')
   <main class="min-h-screen flex justify-center">
     <div class="w-1/2 m-auto py-2 px-10 bg-gray-100 rounded-lg border border-black my-4">
-        <a href="{{ route('users.index',['kantor' => 'all']) }}" class="flex items-center max-w-max my-4 px-4 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-800">
+        <a href="{{ route('users.index',['kantor' => request('kantor'),'bulan' => request('bulan'),'tahun' => request('tahun')]) }}" class="flex items-center max-w-max my-4 px-4 py-1 bg-gray-700 text-white rounded-md hover:bg-gray-800">
           <i class="fas fa-arrow-left text-lg text-gray-100 mr-1"></i> kembali
         </a>
         <fieldset class="space-x-2 border border-gray-300 rounded max-w-max p-2">
           <legend class="text-gray-400 mx-2 text-xs">tipe form</legend>
           <button
-            onclick="showForm('kantor')"
-            id="btn-kantor"
+            onclick="showForm('kantor-1')"
+            id="btn-kantor-1"
             class="px-4 py-1 border rounded hover:shadow-md">
             <i class="fas fa-building text-lg mr-1"></i>
-            Kantor
+            Kantor 1
+          </button>
+          <button
+            onclick="showForm('kantor-2')"
+            id="btn-kantor-2"
+            class="px-4 py-1 border rounded hover:shadow-md">
+            <i class="fas fa-building text-lg mr-1"></i>
+            Kantor 2
           </button>
           <button
             onclick="showForm('awak')"
@@ -26,8 +33,12 @@
         <hr class="my-4 border-[1px] border-gray-200" />
 
           <!-- Form for kantor -->
-          <div id="form-kantor">
-            @include('user.form.create-kantor')
+          <div id="form-kantor-1">
+            @include('user.form.create-kantor-1')
+          </div>
+
+          <div id="form-kantor-2">
+            @include('user.form.create-kantor-2')
           </div>
 
           <!-- Form for awak -->
@@ -35,7 +46,6 @@
             @include('user.form.create-awak12')
           </div>
             
-          </div>
             <!-- Include Signature Pad JS -->
             <script src="https://cdn.jsdelivr.net/npm/signature_pad@2.3.2/dist/signature_pad.min.js"></script>
 
@@ -60,27 +70,62 @@
                     }
                   });
                 }
+                
               }
 
+              // Optional: Show default form on page load
+              document.addEventListener('DOMContentLoaded', () => {
+                const params = new URLSearchParams(window.location.search);
+                let kantorQuery = params.get('kantor');
+                
+                if (kantorQuery === 'awak 1 dan awak 2') {
+                  showForm('awak');
+                } 
+                else if (kantorQuery === 'kantor 1') {
+                  currentKantor = kantorQuery;
+                  showForm('kantor-1');
+                } 
+                else if(kantorQuery === 'kantor 2'){
+                  currentKantor = kantorQuery;
+                  showForm('kantor-2');
+                }
+                // Fallback
+                else {
+                  showForm('awak');
+                }
+              });
+
               function showForm(type){
-                document.getElementById('form-kantor').classList.add('hidden');
+                document.getElementById('form-kantor-1').classList.add('hidden');
+                document.getElementById('form-kantor-2').classList.add('hidden');
                 document.getElementById('form-awak').classList.add('hidden');
                 document.getElementById(`form-${type}`).classList.remove('hidden');
 
                 // Reset button styles
-                document.getElementById('btn-kantor').classList.remove('layout-btn-active');
+                document.getElementById('btn-kantor-1').classList.remove('layout-btn-active');
+                document.getElementById('btn-kantor-2').classList.remove('layout-btn-active');
                 document.getElementById('btn-awak').classList.remove('layout-btn-active');
 
                 // Activate the correct button
                 document.getElementById(`btn-${type}`).classList.add('layout-btn-active');
 
+                // ✅ Update URL without reloading
+                const params = new URLSearchParams(window.location.search);
+
+                if (type === 'kantor-1') {
+                  params.set('kantor', 'kantor 1')
+                } else if(type === 'kantor-2'){
+                  params.set('kantor','kantor 2')
+                } else {
+                  params.set('kantor', 'awak 1 dan awak 2');
+                }
+
+                const newUrl = `${window.location.pathname}?${params.toString()}`;
+                window.history.pushState({}, '', newUrl);
                 initSignaturePad(type);
               }
               
-              // Optional: Show default form on page load
-              document.addEventListener('DOMContentLoaded', () => {
-                showForm('kantor'); // default
-              });
+              
 
               document.querySelectorAll('form').forEach(form => {
                 form.addEventListener('submit', function () {

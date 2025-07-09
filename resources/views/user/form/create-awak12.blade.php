@@ -9,7 +9,7 @@
         <div class="space-y-2">
           <div>
             <label for="user_id" class="mb-1 block text-xs font-bold text-gray-700">Nama</label>
-            <select name="user_id" id="user_id" required class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-300 shadow-sm">
+            <select name="user_id" id="user_id" required class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-200 shadow-sm">
                 @foreach ($users as $user)
                   <option value="{{ $user->id }}">{{ $user->nama }}</option>
                 @endforeach
@@ -21,7 +21,7 @@
           </div>
           <div>
               <label for="kantor" class="mb-1 block text-xs font-bold text-gray-700">Kantor</label>
-              <input type="text" id="kantor" name="kantor" value="awak 1 dan awak 2" class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-300 shadow-sm" readonly>
+              <input type="text" id="kantor" name="kantor" value="awak 1 dan awak 2" class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-200 shadow-sm" readonly>
               @error('kantor')
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
               @enderror

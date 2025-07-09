@@ -8,18 +8,19 @@
               <div class="space-y-2">
                   <div>
                     <label for="nama" class="mb-1 block text-xs font-bold text-gray-800">Nama</label>
-                    <input type="text" id="nama" name="nama" value="{{ old('nama') }}" class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none shadow-sm focus:border-gray-600">
+                    <select name="user_id" id="user_id" required class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-200 shadow-sm">
+                        @foreach ($users as $user)
+                          <option value="{{ $user->id }}">{{ $user->nama }}</option>
+                        @endforeach
+                    </select>
+                    {{-- <input type="text" id="nama" name="nama" value="{{ old('nama') }}" class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none shadow-sm focus:border-gray-600"> --}}
                     @error('nama')
                       <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                   </div>
                   <div>
-                    <label for="kantor" class="mb-1 block text-xs font-bold text-gray-800">Kantor</label>
-                    <select name="kantor" id="kantor" required class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none shadow-sm focus:border-gray-600">
-                      @foreach (['kantor 1','kantor 2'] as $kan)
-                        <option value="{{ $kan }}" {{ request('from') === $kan ? 'selected' : '' }}>{{ $kan }}</option>
-                      @endforeach
-                    </select>
+                    <label for="kantor-2" class="mb-1 block text-xs font-bold text-gray-800">Kantor</label>
+                    <input type="text" id="kantor-2" name="kantor-2" value="kantor 2" class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-200 shadow-sm" readonly>
                     @error('kantor')
                       <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -165,5 +166,15 @@
           </button>
         </div>
       </form>
+      <script>
+        function updateKantorInUrl(newValue) {
+          const params = new URLSearchParams(window.location.search);
+          params.set('kantor', newValue);
+
+          const newUrl = `${window.location.pathname}?${params.toString()}`;
+          window.history.pushState({}, '', newUrl);
+        }
+      </script>
+
 </div>
 </main>
