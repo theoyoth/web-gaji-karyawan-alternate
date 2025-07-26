@@ -24,6 +24,7 @@
 										}, 4000);
 										</script>
 								@endif
+                
 								<div class="w-full flex justify-between items-center mt-8">
                   @include('components.group-link')                  
                   <form method="GET" action="{{ route('user.search') }}" class="flex gap-2 relative">
@@ -136,7 +137,7 @@
                               <tr>
                                 @if($i === 0)
                                   <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">{{ $no++ }}</td>
-                                  <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400 uppercase">{{$user->nama}}-{{$user->id}}</td>
+                                  <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400 uppercase">{{$user->nama}}</td>
                                   <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">Rp{{number_format($salary->gaji_pokok, 0, ',', '.')}}</td>
                                   <td rowspan="{{ $deliveryCount }}" class="text-center border border-gray-400">{{$salary->hari_kerja ?? '-'}}</td>
                                 @endif

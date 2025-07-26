@@ -1,6 +1,17 @@
 <main>
   <h1 class="text-4xl font-bold text-center">FORMULIR INPUT KANTOR</h1>
   <div class="mt-4">
+      @if(session('error'))
+          <div id="error-msg" class="bg-red-100 text-red-600 p-2 text-sm rounded my-2">
+              {{ session('error') }}
+          </div>
+          <script>
+              setTimeout(() => {
+                  const msg = document.getElementById('error-msg');
+                  if (msg) msg.style.display = 'none';
+              }, 4000);
+          </script>
+      @endif
       <form action="{{ route('user.store') }}" method="POST">
           @csrf
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -13,14 +24,22 @@
                           <option value="{{ $user->id }}">{{ $user->nama }}</option>
                         @endforeach
                     </select>
-                    {{-- <input type="text" id="nama" name="nama" value="{{ old('nama') }}" class="w-full h-10 px-2 rounded-md border-2 border-gray-200 outline-none shadow-sm focus:border-gray-600"> --}}
+                    {{-- Checkbox --}}
+                    <label class="block mt-2">
+                        <input type="checkbox" id="new_user_checkbox" name="new_user_checkbox" value="1">
+                        Belum terdaftar
+                    </label>
+
+                    {{-- New User Input (Hidden by Default) --}}
+                    <input type="text" id="nama" name="nama" class="w-full h-10 px-2 mt-2 rounded-md border-2 border-gray-200 outline-none shadow-sm focus:border-gray-600" style="display: none;">
+
                     @error('nama')
                       <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
                   </div>
                   <div>
-                    <label for="kantor-2" class="mb-1 block text-xs font-bold text-gray-800">Kantor</label>
-                    <input type="text" id="kantor-2" name="kantor-2" value="kantor 2" class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-200 shadow-sm" readonly>
+                    <label for="kantor" class="mb-1 block text-xs font-bold text-gray-800">Kantor</label>
+                    <input type="text" id="kantor" name="kantor" value="kantor 2" class="mt-1 outline-1 w-full h-10 px-2 rounded-md border-2 border-gray-200 shadow-sm" readonly>
                     @error('kantor')
                       <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                     @enderror
@@ -174,6 +193,20 @@
           const newUrl = `${window.location.pathname}?${params.toString()}`;
           window.history.pushState({}, '', newUrl);
         }
+        const checkbox = document.getElementById('new_user_checkbox');
+        const namaInput = document.getElementById('nama');
+        const userSelect = document.getElementById('user_id');
+
+        checkbox.addEventListener('change', function () {
+            if (this.checked) {
+                namaInput.style.display = 'block';
+                userSelect.disabled = true;
+                // userSelect.value = ""; 
+            } else {
+                namaInput.style.display = 'none';
+                userSelect.disabled = false;
+            }
+        });
       </script>
 
 </div>

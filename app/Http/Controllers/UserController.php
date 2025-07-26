@@ -105,7 +105,7 @@ class UserController extends Controller
 
 	public function store(Request $request){
 		$request->validate([
-			'nama' => 'required|max:255',
+			'nama' => 'max:255',
 			'kantor' => 'required|max:255',
 			'tempat_lahir' => 'nullable|string',
 			'tanggal_lahir' => 'nullable|date',
@@ -143,7 +143,17 @@ class UserController extends Controller
 		+ ($request->tunjangan_makan ?? 0)
 		+ ($request->tunjangan_hari_tua ?? 0);
 
-    if ($request->filled('user_id')) {
+    if ($request->filled('user_id') &&
+        Salary::where('user_id', $request->user_id)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->exists()) {
+        return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Karyawan ini sudah terdaftar pada bulan ' . $request->bulan . ' tahun ' . $request->tahun);
+    }
+    else if ($request->filled('user_id')) {
         $user = User::find($request->user_id);
     } else {
         $user = new User();
@@ -206,6 +216,30 @@ class UserController extends Controller
 			'ttd' => 'nullable|string',
 
 		]);
+
+    // 🔍 Check if salary already exists for this user in the same month + year
+    $existingUser = null;
+
+    if ($request->filled('user_id')) {
+        $existingUser = User::find($request->user_id);
+    } else {
+        $existingUser = User::where('nama', Str::title($request->nama))
+            ->where('kantor', $request->kantor)
+            ->first();
+    }
+
+    if ($existingUser) {
+        $alreadyExists = Salary::where('user_id', $existingUser->id)
+            ->where('bulan', $request->bulan)
+            ->where('tahun', $request->tahun)
+            ->exists();
+
+        if ($alreadyExists) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Driver ini sudah terdaftar pada bulan ' . $request->bulan . ' tahun ' . $request->tahun);
+        }
+    }
 
 		// store image in storage folder
 		// Clean the base64 signature
