@@ -12,9 +12,9 @@
               $activeKantor = request('kantor');
           @endphp
 
-          <a href="{{ route('user.form', ['kantor' => 'kantor 1']) }}" id="btn-kantor-1" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'kantor 1' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-building text-lg mr-1"></i> Kantor 1</a>
-          <a href="{{ route('user.form', ['kantor' => 'kantor 2']) }}" id="btn-kantor-2" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'kantor 2' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-building text-lg mr-1"></i> Kantor 2</a>
-          <a href="{{ route('user.form', ['kantor' => 'awak 1 dan awak 2']) }}" id="btn-awak" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'awak 1 dan awak 2' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-users text-lg mr-1"></i> Awak 1 dan 2</a>
+          <a href="{{ route('user.form', ['kantor' => 'kantor 1','bulan' => request('bulan'),'tahun' => request('tahun')]) }}" id="btn-kantor-1" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'kantor 1' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-building text-lg mr-1"></i> Kantor 1</a>
+          <a href="{{ route('user.form', ['kantor' => 'kantor 2','bulan' => request('bulan'),'tahun' => request('tahun')]) }}" id="btn-kantor-2" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'kantor 2' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-building text-lg mr-1"></i> Kantor 2</a>
+          <a href="{{ route('user.form', ['kantor' => 'awak 1 dan awak 2','bulan' => request('bulan'),'tahun' => request('tahun')]) }}" id="btn-awak" class="px-4 py-1 border rounded hover:shadow-md {{ $activeKantor == 'awak 1 dan awak 2' ? 'bg-blue-600 text-white' : 'bg-white' }}"><i class="fas fa-users text-lg mr-1"></i> Awak 1 dan 2</a>
         </fieldset>
         <hr class="my-4 border-[1px] border-gray-200" />
 
